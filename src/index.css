@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -42,4 +46,22 @@ body {
   cursor: pointer;
   background: linear-gradient(90deg, #6d00ff, #00d0ff);
   color: white;
+}
+
+/* New section styles */
+.info-section {
+  padding: 80px 10vw;
+  background: #050013;
+  color: #ffffff;
+}
+
+.info-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.info-section p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  max-width: 800px;
 }
