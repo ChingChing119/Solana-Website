@@ -1,9 +1,76 @@
+import { useEffect, useMemo, useState } from 'react';
 import './index.css';
 
 export default function App() {
   const scrollTo = (id) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // -------- Phantom Wallet --------
+  const [provider, setProvider] = useState(null);
+  const [walletAddress, setWalletAddress] = useState('');
+  const [isConnecting, setIsConnecting] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.solana?.isPhantom) {
+      setProvider(window.solana);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!provider) return;
+
+    const handleConnect = (publicKey) => {
+      setWalletAddress(publicKey?.toString?.() ?? '');
+    };
+
+    const handleDisconnect = () => {
+      setWalletAddress('');
+    };
+
+    provider.on?.('connect', handleConnect);
+    provider.on?.('disconnect', handleDisconnect);
+
+    // If user already approved your site before:
+    provider.connect({ onlyIfTrusted: true }).catch(() => {});
+
+    return () => {
+      provider.off?.('connect', handleConnect);
+      provider.off?.('disconnect', handleDisconnect);
+    };
+  }, [provider]);
+
+  const shortAddress = useMemo(() => {
+    if (!walletAddress) return '';
+    return `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`;
+  }, [walletAddress]);
+
+  const handleWalletClick = async () => {
+    if (!provider) {
+      window.open('https://phantom.app/', '_blank', 'noreferrer');
+      return;
+    }
+
+    try {
+      setIsConnecting(true);
+
+      if (walletAddress) {
+        // Disconnect if already connected
+        await provider.disconnect();
+        setWalletAddress('');
+        return;
+      }
+
+      const res = await provider.connect();
+      const addr = res?.publicKey?.toString?.() ?? '';
+      setWalletAddress(addr);
+    } catch (err) {
+      // silent fail for clean UX
+      console.error('Phantom connect error:', err);
+    } finally {
+      setIsConnecting(false);
+    }
   };
 
   return (
@@ -29,13 +96,29 @@ export default function App() {
             </button>
 
             <a
-              className="topbar-btn topbar-btn-primary"
+              className="topbar-btn"
               href="https://x.com/ChingChing_111"
               target="_blank"
               rel="noreferrer"
             >
               X Page
             </a>
+
+            {/* Phantom Connect Button */}
+            <button
+              className={`topbar-btn topbar-btn-wallet ${walletAddress ? 'connected' : ''}`}
+              onClick={handleWalletClick}
+              disabled={isConnecting}
+              title={provider ? 'Connect Phantom' : 'Install Phantom'}
+            >
+              {isConnecting
+                ? 'Connecting...'
+                : walletAddress
+                ? shortAddress
+                : provider
+                ? 'Connect Phantom'
+                : 'Get Phantom'}
+            </button>
           </div>
         </div>
       </header>
@@ -99,7 +182,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* DOUBLE-LAYER ANGLED TICKER (LOCKED TO HERO) */}
+        {/* CROSSING DOUBLE TICKER (LOCKED TO HERO) */}
         <div className="ticker-stack">
           <div className="ticker-strip ticker-strip-a">
             <div className="ticker-track">
@@ -112,7 +195,6 @@ export default function App() {
               <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
 
-              {/* duplicate for seamless loop */}
               <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
@@ -134,7 +216,6 @@ export default function App() {
               <span>AI</span><span>•</span>
               <span>Solana</span><span>•</span>
 
-              {/* duplicate for seamless loop */}
               <span>AISol</span><span>•</span>
               <span>AI</span><span>•</span>
               <span>Solana</span><span>•</span>
