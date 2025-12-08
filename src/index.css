@@ -111,6 +111,26 @@ body {
     0 8px 24px rgba(0,0,0,0.35);
 }
 
+/* Phantom wallet button */
+.topbar-btn-wallet {
+  font-weight: 800;
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+.topbar-btn-wallet.connected {
+  border: none;
+  color: #050013;
+  background: linear-gradient(90deg, var(--sol-purple), var(--sol-green));
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.06),
+    0 8px 24px rgba(0,0,0,0.35);
+}
+
+.topbar-btn-wallet:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 /* =========================
    HERO
 ========================= */
@@ -461,15 +481,14 @@ body {
    LOCKED TO HERO ONLY
 ========================= */
 .ticker-stack {
-  position: absolute;  /* NOT fixed */
+  position: absolute;  /* locked to hero */
   left: 0;
   width: 100%;
-  bottom: -12px;       /* sits on hero edge */
-  z-index: 1;          /* below hero-inner content */
+  bottom: -12px;
+  z-index: 1;          /* behind hero-inner cards */
   pointer-events: none;
 }
 
-/* strips are extra wide so the angle/cross looks strong */
 .ticker-strip {
   height: 56px;
   overflow: hidden;
@@ -494,7 +513,6 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* Cross them by overlapping */
 .ticker-strip-a {
   transform: rotate(-2.2deg);
   position: relative;
@@ -504,16 +522,14 @@ body {
 .ticker-strip-b {
   transform: rotate(2.2deg);
   position: relative;
-  top: -32px;  /* overlap for the cross */
+  top: -32px; /* overlap to cross */
   z-index: 1;
 }
 
-/* text track */
 .ticker-track {
   display: flex;
   align-items: center;
   gap: 26px;
-
   white-space: nowrap;
   padding-left: 100%;
 
@@ -538,7 +554,6 @@ body {
   opacity: 0.95;
 }
 
-/* bullets softer */
 .ticker-track span:nth-child(2n) {
   opacity: 0.55;
   font-weight: 600;
@@ -556,24 +571,28 @@ body {
     justify-items: center;
     gap: 10px;
   }
+
   .topbar-actions {
     justify-content: center;
+    flex-wrap: wrap;
   }
 
   .hero-inner {
     grid-template-columns: 1fr;
   }
+
   .content {
     text-align: center;
   }
+
   .btn-row {
     justify-content: center;
   }
+
   .grid {
     grid-template-columns: 1fr;
   }
 
-  /* reduce overlap on small screens */
   .ticker-strip-b {
     top: -24px;
   }
