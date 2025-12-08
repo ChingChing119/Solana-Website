@@ -43,6 +43,8 @@ export default function App() {
       {/* HERO */}
       <div className="hero">
         <div className="hero-overlay" />
+
+        {/* ambient moving glow orbs */}
         <div className="hero-ambient">
           <span className="orb orb-green" />
           <span className="orb orb-purple" />
@@ -115,7 +117,7 @@ export default function App() {
             </div>
             <div className="panel">
               <h3>Tokenomics</h3>
-              <p>Add supply, taxes (if any), allocations, and liquidity plan.</p>
+              <p>Add supply, allocations, and liquidity plan.</p>
             </div>
             <div className="panel">
               <h3>Roadmap</h3>
@@ -141,9 +143,6 @@ export default function App() {
           </div>
         </div>
       </section>
-    </>
-  );
-}
 
       {/* DOUBLE-LAYER ANGLED TICKER */}
       <div className="ticker-stack">
@@ -191,3 +190,6 @@ export default function App() {
           </div>
         </div>
       </div>
+    </>
+  );
+}
