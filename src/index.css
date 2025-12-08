@@ -3,7 +3,6 @@ html {
 }
 
 :root {
-  /* Solana-inspired palette */
   --sol-green: #14f195;
   --sol-purple: #9945ff;
 
@@ -122,7 +121,6 @@ body {
   align-items: center;
   justify-content: center;
 
-  /* push content down so it doesn't hide behind topbar */
   padding-top: 70px;
 
   background-image:
@@ -141,7 +139,6 @@ body {
   pointer-events: none;
 }
 
-/* ambient moving glow orbs */
 .hero-ambient {
   position: absolute;
   inset: 0;
@@ -187,6 +184,7 @@ body {
   z-index: 1;
 }
 
+/* Left content card */
 .content {
   text-align: left;
   background: var(--panel);
@@ -292,7 +290,7 @@ body {
   box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* subtle pulsing glow on main CTA */
+/* pulsing glow on main CTA */
 .glow-btn {
   position: relative;
   overflow: hidden;
@@ -456,31 +454,6 @@ body {
   100% { transform: translateX(10%); }
 }
 
-/* RESPONSIVE */
-@media (max-width: 980px) {
-  .topbar-inner {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    gap: 10px;
-  }
-  .topbar-actions {
-    justify-content: center;
-  }
-
-  .hero-inner {
-    grid-template-columns: 1fr;
-  }
-  .content {
-    text-align: center;
-  }
-  .btn-row {
-    justify-content: center;
-  }
-  .grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* =========================
    DOUBLE-LAYER ANGLED TICKER
 ========================= */
@@ -490,7 +463,7 @@ body {
   left: 0;
   width: 100%;
   z-index: 60;
-  pointer-events: none; /* purely visual */
+  pointer-events: none;
 }
 
 .ticker-strip {
@@ -514,26 +487,21 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* Top strip */
 .ticker-strip-a {
   transform: rotate(-1.6deg);
   margin-bottom: 8px;
 }
 
-/* Bottom strip */
 .ticker-strip-b {
   transform: rotate(1.4deg);
 }
 
-/* Track */
 .ticker-track {
   display: flex;
   align-items: center;
   gap: 24px;
-
   white-space: nowrap;
   padding-left: 100%;
-
   animation: tickerMove 16s linear infinite;
 }
 
@@ -555,7 +523,6 @@ body {
   opacity: 0.95;
 }
 
-/* bullets look softer */
 .ticker-track span:nth-child(2n) {
   opacity: 0.55;
   font-weight: 600;
@@ -566,7 +533,32 @@ body {
   100% { transform: translateX(-100%); }
 }
 
-/* Give bottom of page breathing room so content won't sit under tickers */
+/* Give bottom of page room so content isn't hidden behind ticker */
 .section:last-of-type {
-  padding-bottom: 160px;
+  padding-bottom: 170px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 980px) {
+  .topbar-inner {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 10px;
+  }
+  .topbar-actions {
+    justify-content: center;
+  }
+
+  .hero-inner {
+    grid-template-columns: 1fr;
+  }
+  .content {
+    text-align: center;
+  }
+  .btn-row {
+    justify-content: center;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
