@@ -98,6 +98,53 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        {/* DOUBLE-LAYER ANGLED TICKER (LOCKED TO HERO) */}
+        <div className="ticker-stack">
+          <div className="ticker-strip ticker-strip-a">
+            <div className="ticker-track">
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+
+              {/* duplicate for seamless loop */}
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
+            </div>
+          </div>
+
+          <div className="ticker-strip ticker-strip-b">
+            <div className="ticker-track ticker-track-slower">
+              <span>AISol</span><span>•</span>
+              <span>AI</span><span>•</span>
+              <span>Solana</span><span>•</span>
+              <span>Join the Revolution</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AI</span><span>•</span>
+              <span>Solana</span><span>•</span>
+
+              {/* duplicate for seamless loop */}
+              <span>AISol</span><span>•</span>
+              <span>AI</span><span>•</span>
+              <span>Solana</span><span>•</span>
+              <span>Join the Revolution</span><span>•</span>
+              <span>AISol</span><span>•</span>
+              <span>AI</span><span>•</span>
+              <span>Solana</span><span>•</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* More Info Section */}
@@ -143,53 +190,6 @@ export default function App() {
           </div>
         </div>
       </section>
-
-      {/* DOUBLE-LAYER ANGLED TICKER */}
-      <div className="ticker-stack">
-        <div className="ticker-strip ticker-strip-a">
-          <div className="ticker-track">
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-
-            {/* duplicate for seamless loop */}
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AISol</span><span>•</span>
-          </div>
-        </div>
-
-        <div className="ticker-strip ticker-strip-b">
-          <div className="ticker-track ticker-track-slower">
-            <span>AISol</span><span>•</span>
-            <span>AI</span><span>•</span>
-            <span>Solana</span><span>•</span>
-            <span>Join the Revolution</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AI</span><span>•</span>
-            <span>Solana</span><span>•</span>
-
-            {/* duplicate for seamless loop */}
-            <span>AISol</span><span>•</span>
-            <span>AI</span><span>•</span>
-            <span>Solana</span><span>•</span>
-            <span>Join the Revolution</span><span>•</span>
-            <span>AISol</span><span>•</span>
-            <span>AI</span><span>•</span>
-            <span>Solana</span><span>•</span>
-          </div>
-        </div>
-      </div>
     </>
   );
 }
