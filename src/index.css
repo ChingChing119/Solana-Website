@@ -121,6 +121,7 @@ body {
   align-items: center;
   justify-content: center;
 
+  /* space for topbar */
   padding-top: 70px;
 
   background-image:
@@ -139,6 +140,7 @@ body {
   pointer-events: none;
 }
 
+/* ambient moving glow orbs */
 .hero-ambient {
   position: absolute;
   inset: 0;
@@ -181,10 +183,10 @@ body {
   grid-template-columns: 1.2fr 0.8fr;
   gap: 32px;
   align-items: center;
-  z-index: 1;
+  z-index: 2;
 }
 
-/* Left content card */
+/* content card */
 .content {
   text-align: left;
   background: var(--panel);
@@ -455,58 +457,71 @@ body {
 }
 
 /* =========================
-   DOUBLE-LAYER ANGLED TICKER
+   CROSSING DOUBLE TICKER
+   LOCKED TO HERO ONLY
 ========================= */
 .ticker-stack {
-  position: fixed;
-  bottom: -6px;
+  position: absolute;  /* NOT fixed */
   left: 0;
   width: 100%;
-  z-index: 60;
+  bottom: -12px;       /* sits on hero edge */
+  z-index: 1;          /* below hero-inner content */
   pointer-events: none;
 }
 
+/* strips are extra wide so the angle/cross looks strong */
 .ticker-strip {
-  height: 54px;
+  height: 56px;
   overflow: hidden;
   display: flex;
   align-items: center;
 
+  width: 112%;
+  margin-left: -6%;
+
   background:
     linear-gradient(90deg,
-      rgba(153,69,255,0.18),
-      rgba(20,241,149,0.18)
+      rgba(153,69,255,0.20),
+      rgba(20,241,149,0.20)
     ),
-    rgba(0, 0, 0, 0.45);
+    rgba(0, 0, 0, 0.50);
 
   border-top: 1px solid rgba(255,255,255,0.08);
   border-bottom: 1px solid rgba(255,255,255,0.06);
   backdrop-filter: blur(10px);
 
-  transform-origin: left center;
+  transform-origin: center center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
+/* Cross them by overlapping */
 .ticker-strip-a {
-  transform: rotate(-1.6deg);
-  margin-bottom: 8px;
+  transform: rotate(-2.2deg);
+  position: relative;
+  z-index: 2;
 }
 
 .ticker-strip-b {
-  transform: rotate(1.4deg);
+  transform: rotate(2.2deg);
+  position: relative;
+  top: -32px;  /* overlap for the cross */
+  z-index: 1;
 }
 
+/* text track */
 .ticker-track {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 26px;
+
   white-space: nowrap;
   padding-left: 100%;
-  animation: tickerMove 16s linear infinite;
+
+  animation: tickerMove 35s linear infinite; /* slower */
 }
 
 .ticker-track-slower {
-  animation-duration: 22s;
+  animation-duration: 45s; /* even slower */
 }
 
 .ticker-track span {
@@ -523,6 +538,7 @@ body {
   opacity: 0.95;
 }
 
+/* bullets softer */
 .ticker-track span:nth-child(2n) {
   opacity: 0.55;
   font-weight: 600;
@@ -531,11 +547,6 @@ body {
 @keyframes tickerMove {
   0% { transform: translateX(0); }
   100% { transform: translateX(-100%); }
-}
-
-/* Give bottom of page room so content isn't hidden behind ticker */
-.section:last-of-type {
-  padding-bottom: 170px;
 }
 
 /* RESPONSIVE */
@@ -560,5 +571,10 @@ body {
   }
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  /* reduce overlap on small screens */
+  .ticker-strip-b {
+    top: -24px;
   }
 }
