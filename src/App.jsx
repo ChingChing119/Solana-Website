@@ -1,124 +1,128 @@
-import { useEffect, useMemo, useState } from 'react';
-import './index.css';
-import logo from './assets/AISOL.webp';
-import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
+import { useEffect, useMemo, useState } from "react";
+import "./index.css";
+import logo from "./assets/AISOL.webp";
+import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 
 export default function App() {
+  // -----------------------------
+  // Smooth scroll helper
+  // -----------------------------
   const scrollTo = (id) => {
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  // -------- Solana Connection --------
-  const connection = useMemo(() => {
-    // You can swap to your own RPC later for better reliability
-    return new Connection(clusterApiUrl('mainnet-beta'), 'confirmed');
-  }, []);
+  // -----------------------------
+  // Solana RPC
+  // -----------------------------
+  const connection = useMemo(
+    () => new Connection(clusterApiUrl("mainnet-beta"), "confirmed"),
+    []
+  );
 
-  // -------- Phantom Wallet --------
+  // -----------------------------
+  // Phantom state
+  // -----------------------------
   const [provider, setProvider] = useState(null);
-  const [walletAddress, setWalletAddress] = useState('');
-  const [isConnecting, setIsConnecting] = useState(false);
+  const [walletAddress, setWalletAddress] = useState("");
   const [solBalance, setSolBalance] = useState(null);
+  const [isConnecting, setIsConnecting] = useState(false);
 
+  // Detect Phantom
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.solana?.isPhantom) {
+    if (typeof window !== "undefined" && window.solana?.isPhantom) {
       setProvider(window.solana);
     }
   }, []);
 
+  // Fetch SOL balance
   const fetchBalance = async (address) => {
-    if (!address) {
-      setSolBalance(null);
-      return;
-    }
-
     try {
+      if (!address) {
+        setSolBalance(null);
+        return;
+      }
       const pubkey = new PublicKey(address);
       const lamports = await connection.getBalance(pubkey);
       const sol = lamports / 1_000_000_000;
       setSolBalance(sol);
     } catch (err) {
-      console.error('Balance fetch error:', err);
+      console.error("Balance error:", err);
       setSolBalance(null);
     }
   };
 
+  // Listen to wallet events
   useEffect(() => {
     if (!provider) return;
 
-    const handleConnect = (publicKey) => {
-      const addr = publicKey?.toString?.() ?? '';
+    const onConnect = (publicKey) => {
+      const addr = publicKey?.toString?.() ?? "";
       setWalletAddress(addr);
       fetchBalance(addr);
     };
 
-    const handleDisconnect = () => {
-      setWalletAddress('');
+    const onDisconnect = () => {
+      setWalletAddress("");
       setSolBalance(null);
     };
 
-    const handleAccountChanged = (publicKey) => {
-      const addr = publicKey?.toString?.() ?? '';
+    const onAccountChanged = (publicKey) => {
+      const addr = publicKey?.toString?.() ?? "";
       setWalletAddress(addr);
-      fetchBalance(addr);
+      if (addr) fetchBalance(addr);
+      else setSolBalance(null);
     };
 
-    provider.on?.('connect', handleConnect);
-    provider.on?.('disconnect', handleDisconnect);
-    provider.on?.('accountChanged', handleAccountChanged);
+    provider.on?.("connect", onConnect);
+    provider.on?.("disconnect", onDisconnect);
+    provider.on?.("accountChanged", onAccountChanged);
 
-    // Silent auto-connect if already trusted
+    // Silent reconnect if trustworthy
     provider.connect({ onlyIfTrusted: true }).catch(() => {});
 
     return () => {
-      provider.off?.('connect', handleConnect);
-      provider.off?.('disconnect', handleDisconnect);
-      provider.off?.('accountChanged', handleAccountChanged);
+      provider.off?.("connect", onConnect);
+      provider.off?.("disconnect", onDisconnect);
+      provider.off?.("accountChanged", onAccountChanged);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider]);
 
-  // Refetch balance when address changes
-  useEffect(() => {
-    if (walletAddress) fetchBalance(walletAddress);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletAddress]);
+  const shortAddress = walletAddress
+    ? `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`
+    : "";
 
-  const shortAddress = useMemo(() => {
-    if (!walletAddress) return '';
-    return `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`;
-  }, [walletAddress]);
-
-  const displayBalance = useMemo(() => {
-    if (solBalance === null || solBalance === undefined) return '';
-    // Nice compact display
-    const fixed = solBalance >= 10 ? solBalance.toFixed(2) : solBalance.toFixed(3);
-    return `${fixed} SOL`;
-  }, [solBalance]);
+  const prettyBalance =
+    solBalance == null
+      ? ""
+      : solBalance >= 10
+      ? solBalance.toFixed(2)
+      : solBalance.toFixed(3);
 
   const handleWalletClick = async () => {
     if (!provider) {
-      window.open('https://phantom.app/', '_blank', 'noreferrer');
+      window.open("https://phantom.app/", "_blank", "noreferrer");
       return;
     }
 
     try {
       setIsConnecting(true);
 
+      // If connected, disconnect
       if (walletAddress) {
         await provider.disconnect();
-        setWalletAddress('');
+        setWalletAddress("");
         setSolBalance(null);
         return;
       }
 
       const res = await provider.connect();
-      const addr = res?.publicKey?.toString?.() ?? '';
+      const addr = res?.publicKey?.toString?.() ?? "";
       setWalletAddress(addr);
       await fetchBalance(addr);
     } catch (err) {
-      console.error('Phantom connect error:', err);
+      console.error("Phantom connect error:", err);
     } finally {
       setIsConnecting(false);
     }
@@ -126,7 +130,9 @@ export default function App() {
 
   return (
     <>
-      {/* TOP BAR */}
+      {/* =========================
+          TOP BAR
+      ========================== */}
       <header className="topbar">
         <div className="topbar-inner">
           <div className="brand">
@@ -137,7 +143,10 @@ export default function App() {
           <div className="topbar-pill">AI meets Solana speed ⚡</div>
 
           <div className="topbar-actions">
-            <button className="topbar-btn" onClick={() => scrollTo('chart')}>
+            <button
+              className="topbar-btn"
+              onClick={() => scrollTo("chart")}
+            >
               View Chart
             </button>
 
@@ -150,36 +159,40 @@ export default function App() {
               X Page
             </a>
 
-            {/* Phantom Connect + Balance */}
             <button
-              className={`topbar-btn topbar-btn-wallet ${walletAddress ? 'connected' : ''}`}
+              className={`topbar-btn topbar-btn-wallet ${
+                walletAddress ? "connected" : ""
+              }`}
               onClick={handleWalletClick}
               disabled={isConnecting}
-              title={provider ? 'Connect Phantom' : 'Install Phantom'}
+              title={provider ? "Connect Phantom" : "Install Phantom"}
             >
               {isConnecting
-                ? 'Connecting...'
+                ? "Connecting..."
                 : walletAddress
-                ? `${shortAddress}${displayBalance ? ` • ${displayBalance}` : ''}`
+                ? `${shortAddress}${prettyBalance ? ` • ${prettyBalance} SOL` : ""}`
                 : provider
-                ? 'Connect Phantom'
-                : 'Get Phantom'}
+                ? "Connect Phantom"
+                : "Get Phantom"}
             </button>
           </div>
         </div>
       </header>
 
-      {/* HERO */}
+      {/* =========================
+          HERO
+      ========================== */}
       <div className="hero">
         <div className="hero-overlay" />
 
-        {/* ambient moving glow orbs */}
+        {/* Ambient glow orbs */}
         <div className="hero-ambient">
           <span className="orb orb-green" />
           <span className="orb orb-purple" />
         </div>
 
         <div className="hero-inner">
+          {/* LEFT CONTENT */}
           <div className="content glow-card">
             <div className="badge">AI + Solana</div>
 
@@ -193,12 +206,15 @@ export default function App() {
             <div className="btn-row">
               <button
                 className="btn btn-primary glow-btn"
-                onClick={() => scrollTo('more-info')}
+                onClick={() => scrollTo("more-info")}
               >
                 Join the Revolution
               </button>
 
-              <button className="btn btn-secondary" onClick={() => scrollTo('chart')}>
+              <button
+                className="btn btn-secondary"
+                onClick={() => scrollTo("chart")}
+              >
                 View Chart
               </button>
 
@@ -213,20 +229,28 @@ export default function App() {
             </div>
           </div>
 
+          {/* RIGHT VISUAL */}
           <div className="visual-card glow-card">
             <div className="visual-glow" />
             <div className="visual-text">
               <div className="visual-kicker">Powered by</div>
               <div className="visual-big">Solana-grade speed</div>
-              <div className="visual-sub">Add tokenomics • roadmap • utilities</div>
+              <div className="visual-sub">
+                Add tokenomics • roadmap • utilities
+              </div>
             </div>
           </div>
         </div>
 
-        {/* TICKER STACK (your current version in CSS controls look/behavior) */}
+        {/* =========================
+            TICKER STACK
+            (CSS controls crossing/glow/speed)
+        ========================== */}
         <div className="ticker-stack">
           <div className="ticker-strip ticker-strip-a">
             <div className="ticker-track">
+              <span>AISol</span><span>•</span>
+              <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
@@ -243,16 +267,19 @@ export default function App() {
               <span>AISol</span><span>•</span>
               <span>AI</span><span>•</span>
               <span>Solana</span><span>•</span>
-              <span>Join the Revolution</span><span>•</span>
+              <span>AI meets Solana speed</span><span>•</span>
               <span>AISol</span><span>•</span>
               <span>AI</span><span>•</span>
               <span>Solana</span><span>•</span>
+              <span>Join the Revolution</span><span>•</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* More Info Section */}
+      {/* =========================
+          MORE INFO
+      ========================== */}
       <section id="more-info" className="section">
         <div className="section-inner">
           <h2>What is AISol?</h2>
@@ -279,7 +306,9 @@ export default function App() {
         </div>
       </section>
 
-      {/* Chart Section */}
+      {/* =========================
+          CHART
+      ========================== */}
       <section id="chart" className="section section-alt">
         <div className="section-inner">
           <h2>Chart</h2>
