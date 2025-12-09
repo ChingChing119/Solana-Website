@@ -52,22 +52,10 @@ body {
   gap: 10px;
 }
 
-/* Old gradient dot (safe to keep) */
-.brand-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--sol-purple), var(--sol-green));
-  box-shadow:
-    0 0 10px rgba(153, 69, 255, 0.7),
-    0 0 14px rgba(20, 241, 149, 0.6);
-}
-
-/* New logo image (if you switched to <img className="brand-logo" />) */
 .brand-logo {
   width: 22px;
   height: 22px;
-  border-radius: 6px; /* change to 999px for circle */
+  border-radius: 6px;
   object-fit: cover;
   box-shadow:
     0 0 10px rgba(153, 69, 255, 0.55),
@@ -113,17 +101,6 @@ body {
   opacity: 0.95;
 }
 
-/* optional primary style (if you ever re-add it) */
-.topbar-btn-primary {
-  border: none;
-  color: #050013;
-  font-weight: 800;
-  background: linear-gradient(90deg, var(--sol-purple), var(--sol-green));
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.06),
-    0 8px 24px rgba(0,0,0,0.35);
-}
-
 /* Phantom wallet button */
 .topbar-btn-wallet {
   font-weight: 800;
@@ -153,8 +130,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* space for topbar */
   padding-top: 70px;
 
   background-image:
@@ -492,35 +467,25 @@ body {
 }
 
 /* =========================
-   TICKER: BOTTOM OF FIRST PAGE (HERO)
-   + CROSSING LAYERS
-   + TEXT ALWAYS VISIBLE
+   SEAMLESS DOUBLE TICKER
+   BOTTOM OF HERO
 ========================= */
 .ticker-stack {
   position: absolute;
   left: 0;
   width: 100%;
-
-  /* bottom of hero */
   bottom: -12px;
-
-  /* ensure no leftover center rules apply */
-  top: auto;
-  transform: none;
-
-  height: 130px; /* space for overlap/cross */
+  height: 130px;
   z-index: 1;
   pointer-events: none;
 }
 
-/* centered strips */
+/* strips */
 .ticker-strip {
   position: absolute;
   left: 50%;
-
   height: 56px;
   width: 120vw;
-
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -540,11 +505,10 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* Cross inside the stack */
+/* crossing layout */
 .ticker-strip-a {
   transform: translateX(-50%) rotate(-2.6deg);
   z-index: 2;
-
   bottom: 50%;
   margin-bottom: 12px;
 }
@@ -552,49 +516,52 @@ body {
 .ticker-strip-b {
   transform: translateX(-50%) rotate(2.6deg);
   z-index: 1;
-
   bottom: 50%;
   margin-bottom: -12px;
 }
 
-/* Track: text visible immediately */
+/* marquee container */
 .ticker-track {
   display: flex;
   align-items: center;
-  gap: 26px;
+  width: max-content;
   white-space: nowrap;
-
-  padding-left: 24px;
-
-  animation: tickerMove 38s linear infinite; /* slow */
+  animation: marquee 40s linear infinite;
 }
 
 .ticker-track-slower {
-  animation-duration: 50s; /* slower */
+  animation-duration: 55s;
 }
 
-.ticker-track span {
+/* one full sequence */
+.ticker-run {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding-right: 26px;
+}
+
+.ticker-run span {
   font-weight: 800;
   letter-spacing: 1px;
   font-size: 1.05rem;
-
   background: linear-gradient(90deg, var(--sol-purple), var(--sol-green));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-
   text-transform: uppercase;
   opacity: 0.95;
 }
 
-.ticker-track span:nth-child(2n) {
+.ticker-run span:nth-child(2n) {
   opacity: 0.55;
   font-weight: 600;
 }
 
-@keyframes tickerMove {
+/* move exactly half width (because we duplicated runs) */
+@keyframes marquee {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+  100% { transform: translateX(-50%); }
 }
 
 /* =========================
