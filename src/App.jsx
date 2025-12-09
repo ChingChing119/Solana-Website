@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import './index.css';
 import logo from './assets/AISOL.webp';
+import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
 
 export default function App() {
   const scrollTo = (id) => {
@@ -8,10 +9,17 @@ export default function App() {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // -------- Solana Connection --------
+  const connection = useMemo(() => {
+    // You can swap to your own RPC later for better reliability
+    return new Connection(clusterApiUrl('mainnet-beta'), 'confirmed');
+  }, []);
+
   // -------- Phantom Wallet --------
   const [provider, setProvider] = useState(null);
   const [walletAddress, setWalletAddress] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
+  const [solBalance, setSolBalance] = useState(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.solana?.isPhantom) {
@@ -19,16 +27,46 @@ export default function App() {
     }
   }, []);
 
+  const fetchBalance = async (address) => {
+    if (!address) {
+      setSolBalance(null);
+      return;
+    }
+
+    try {
+      const pubkey = new PublicKey(address);
+      const lamports = await connection.getBalance(pubkey);
+      const sol = lamports / 1_000_000_000;
+      setSolBalance(sol);
+    } catch (err) {
+      console.error('Balance fetch error:', err);
+      setSolBalance(null);
+    }
+  };
+
   useEffect(() => {
     if (!provider) return;
 
     const handleConnect = (publicKey) => {
-      setWalletAddress(publicKey?.toString?.() ?? '');
+      const addr = publicKey?.toString?.() ?? '';
+      setWalletAddress(addr);
+      fetchBalance(addr);
     };
-    const handleDisconnect = () => setWalletAddress('');
+
+    const handleDisconnect = () => {
+      setWalletAddress('');
+      setSolBalance(null);
+    };
+
+    const handleAccountChanged = (publicKey) => {
+      const addr = publicKey?.toString?.() ?? '';
+      setWalletAddress(addr);
+      fetchBalance(addr);
+    };
 
     provider.on?.('connect', handleConnect);
     provider.on?.('disconnect', handleDisconnect);
+    provider.on?.('accountChanged', handleAccountChanged);
 
     // Silent auto-connect if already trusted
     provider.connect({ onlyIfTrusted: true }).catch(() => {});
@@ -36,13 +74,28 @@ export default function App() {
     return () => {
       provider.off?.('connect', handleConnect);
       provider.off?.('disconnect', handleDisconnect);
+      provider.off?.('accountChanged', handleAccountChanged);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider]);
+
+  // Refetch balance when address changes
+  useEffect(() => {
+    if (walletAddress) fetchBalance(walletAddress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletAddress]);
 
   const shortAddress = useMemo(() => {
     if (!walletAddress) return '';
     return `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`;
   }, [walletAddress]);
+
+  const displayBalance = useMemo(() => {
+    if (solBalance === null || solBalance === undefined) return '';
+    // Nice compact display
+    const fixed = solBalance >= 10 ? solBalance.toFixed(2) : solBalance.toFixed(3);
+    return `${fixed} SOL`;
+  }, [solBalance]);
 
   const handleWalletClick = async () => {
     if (!provider) {
@@ -56,12 +109,14 @@ export default function App() {
       if (walletAddress) {
         await provider.disconnect();
         setWalletAddress('');
+        setSolBalance(null);
         return;
       }
 
       const res = await provider.connect();
       const addr = res?.publicKey?.toString?.() ?? '';
       setWalletAddress(addr);
+      await fetchBalance(addr);
     } catch (err) {
       console.error('Phantom connect error:', err);
     } finally {
@@ -79,15 +134,10 @@ export default function App() {
             <span className="brand-text">AISol</span>
           </div>
 
-          <div className="topbar-pill">
-            AI meets Solana speed ⚡
-          </div>
+          <div className="topbar-pill">AI meets Solana speed ⚡</div>
 
           <div className="topbar-actions">
-            <button
-              className="topbar-btn"
-              onClick={() => scrollTo('chart')}
-            >
+            <button className="topbar-btn" onClick={() => scrollTo('chart')}>
               View Chart
             </button>
 
@@ -100,6 +150,7 @@ export default function App() {
               X Page
             </a>
 
+            {/* Phantom Connect + Balance */}
             <button
               className={`topbar-btn topbar-btn-wallet ${walletAddress ? 'connected' : ''}`}
               onClick={handleWalletClick}
@@ -109,7 +160,7 @@ export default function App() {
               {isConnecting
                 ? 'Connecting...'
                 : walletAddress
-                ? shortAddress
+                ? `${shortAddress}${displayBalance ? ` • ${displayBalance}` : ''}`
                 : provider
                 ? 'Connect Phantom'
                 : 'Get Phantom'}
@@ -147,10 +198,7 @@ export default function App() {
                 Join the Revolution
               </button>
 
-              <button
-                className="btn btn-secondary"
-                onClick={() => scrollTo('chart')}
-              >
+              <button className="btn btn-secondary" onClick={() => scrollTo('chart')}>
                 View Chart
               </button>
 
@@ -170,14 +218,12 @@ export default function App() {
             <div className="visual-text">
               <div className="visual-kicker">Powered by</div>
               <div className="visual-big">Solana-grade speed</div>
-              <div className="visual-sub">
-                Add tokenomics • roadmap • utilities
-              </div>
+              <div className="visual-sub">Add tokenomics • roadmap • utilities</div>
             </div>
           </div>
         </div>
 
-        {/* ✅ TICKER REVERTED TO FIRST MODEL */}
+        {/* TICKER STACK (your current version in CSS controls look/behavior) */}
         <div className="ticker-stack">
           <div className="ticker-strip ticker-strip-a">
             <div className="ticker-track">
@@ -237,9 +283,7 @@ export default function App() {
       <section id="chart" className="section section-alt">
         <div className="section-inner">
           <h2>Chart</h2>
-          <p>
-            Add your chart embed or link here when you’re ready.
-          </p>
+          <p>Add your chart embed or link here when you’re ready.</p>
 
           <div className="chart-placeholder">
             <div className="chart-line" />
