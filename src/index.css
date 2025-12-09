@@ -101,16 +101,6 @@ body {
   opacity: 0.95;
 }
 
-.topbar-btn-primary {
-  border: none;
-  color: #050013;
-  font-weight: 800;
-  background: linear-gradient(90deg, var(--sol-purple), var(--sol-green));
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.06),
-    0 8px 24px rgba(0,0,0,0.35);
-}
-
 /* Phantom wallet button */
 .topbar-btn-wallet {
   font-weight: 800;
@@ -140,8 +130,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* space for topbar */
   padding-top: 70px;
 
   background-image:
@@ -477,7 +465,7 @@ body {
 }
 
 /* =========================
-   CENTER-CROSSING DOUBLE TICKER
+   TICKER: CROSS IN THE MIDDLE
    LOCKED TO HERO ONLY
    + TEXT ALWAYS VISIBLE
 ========================= */
@@ -486,16 +474,15 @@ body {
   left: 0;
   width: 100%;
   bottom: -12px;
-  height: 120px;
+  height: 130px;
   z-index: 1;
   pointer-events: none;
 }
 
-/* centered strips so the cross happens at screen center */
+/* centered strips */
 .ticker-strip {
   position: absolute;
   left: 50%;
-  bottom: 0;
 
   height: 56px;
   width: 120vw;
@@ -519,21 +506,24 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* top strip */
+/* CROSS EXACTLY AT THE MIDLINE */
 .ticker-strip-a {
-  transform: translateX(-50%) rotate(-2.2deg);
+  transform: translateX(-50%) rotate(-2.6deg);
   z-index: 2;
-  bottom: 34px;
+
+  bottom: 50%;
+  margin-bottom: 12px;
 }
 
-/* bottom strip */
 .ticker-strip-b {
-  transform: translateX(-50%) rotate(2.2deg);
+  transform: translateX(-50%) rotate(2.6deg);
   z-index: 1;
-  bottom: 12px;
+
+  bottom: 50%;
+  margin-bottom: -12px;
 }
 
-/* Track: remove off-screen lead-in so text is visible immediately */
+/* Track: visible immediately */
 .ticker-track {
   display: flex;
   align-items: center;
@@ -542,11 +532,11 @@ body {
 
   padding-left: 24px;
 
-  animation: tickerMove 35s linear infinite;
+  animation: tickerMove 38s linear infinite;
 }
 
 .ticker-track-slower {
-  animation-duration: 45s;
+  animation-duration: 50s;
 }
 
 .ticker-track span {
@@ -563,7 +553,6 @@ body {
   opacity: 0.95;
 }
 
-/* bullets softer */
 .ticker-track span:nth-child(2n) {
   opacity: 0.55;
   font-weight: 600;
@@ -604,14 +593,16 @@ body {
   }
 
   .ticker-stack {
-    height: 110px;
+    height: 120px;
   }
 
   .ticker-strip-a {
-    bottom: 30px;
+    transform: translateX(-50%) rotate(-2.2deg);
+    margin-bottom: 10px;
   }
 
   .ticker-strip-b {
-    bottom: 10px;
+    transform: translateX(-50%) rotate(2.2deg);
+    margin-bottom: -10px;
   }
 }
