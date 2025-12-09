@@ -74,20 +74,14 @@ export default function App() {
       <header className="topbar">
         <div className="topbar-inner">
           <div className="brand">
-            {/* NEW LOGO IMAGE REPLACING DOT */}
             <img src={logo} alt="AISol logo" className="brand-logo" />
             <span className="brand-text">AISol</span>
           </div>
 
-          <div className="topbar-pill">
-            AI meets Solana speed ⚡
-          </div>
+          <div className="topbar-pill">AI meets Solana speed ⚡</div>
 
           <div className="topbar-actions">
-            <button
-              className="topbar-btn"
-              onClick={() => scrollTo('chart')}
-            >
+            <button className="topbar-btn" onClick={() => scrollTo('chart')}>
               View Chart
             </button>
 
@@ -100,7 +94,6 @@ export default function App() {
               X Page
             </a>
 
-            {/* Phantom Connect Button */}
             <button
               className={`topbar-btn topbar-btn-wallet ${walletAddress ? 'connected' : ''}`}
               onClick={handleWalletClick}
@@ -148,10 +141,7 @@ export default function App() {
                 Join the Revolution
               </button>
 
-              <button
-                className="btn btn-secondary"
-                onClick={() => scrollTo('chart')}
-              >
+              <button className="btn btn-secondary" onClick={() => scrollTo('chart')}>
                 View Chart
               </button>
 
@@ -171,46 +161,62 @@ export default function App() {
             <div className="visual-text">
               <div className="visual-kicker">Powered by</div>
               <div className="visual-big">Solana-grade speed</div>
-              <div className="visual-sub">
-                Add tokenomics • roadmap • utilities
-              </div>
+              <div className="visual-sub">Add tokenomics • roadmap • utilities</div>
             </div>
           </div>
         </div>
 
-        {/* DOUBLE-LAYER ANGLED TICKER (LOCKED TO HERO BOTTOM) */}
+        {/* SEAMLESS DOUBLE-LAYER TICKER (LOCKED TO HERO BOTTOM) */}
         <div className="ticker-stack">
+          {/* STRIP A */}
           <div className="ticker-strip ticker-strip-a">
             <div className="ticker-track">
-              <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
+              <div className="ticker-run">
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+              </div>
 
-              <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
+              <div className="ticker-run">
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AISol</span><span>•</span>
+              </div>
             </div>
           </div>
 
+          {/* STRIP B */}
           <div className="ticker-strip ticker-strip-b">
             <div className="ticker-track ticker-track-slower">
-              <span>AISol</span><span>•</span>
-              <span>AI</span><span>•</span>
-              <span>Solana</span><span>•</span>
-              <span>Join the Revolution</span><span>•</span>
-              <span>AISol</span><span>•</span>
+              <div className="ticker-run">
+                <span>AISol</span><span>•</span>
+                <span>AI</span><span>•</span>
+                <span>Solana</span><span>•</span>
+                <span>Join the Revolution</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AI</span><span>•</span>
+                <span>Solana</span><span>•</span>
+              </div>
 
-              <span>AISol</span><span>•</span>
-              <span>AI</span><span>•</span>
-              <span>Solana</span><span>•</span>
-              <span>Join the Revolution</span><span>•</span>
-              <span>AISol</span><span>•</span>
+              <div className="ticker-run">
+                <span>AISol</span><span>•</span>
+                <span>AI</span><span>•</span>
+                <span>Solana</span><span>•</span>
+                <span>Join the Revolution</span><span>•</span>
+                <span>AISol</span><span>•</span>
+                <span>AI</span><span>•</span>
+                <span>Solana</span><span>•</span>
+              </div>
             </div>
           </div>
         </div>
@@ -247,9 +253,7 @@ export default function App() {
       <section id="chart" className="section section-alt">
         <div className="section-inner">
           <h2>Chart</h2>
-          <p>
-            Add your chart embed or link here when you’re ready.
-          </p>
+          <p>Add your chart embed or link here when you’re ready.</p>
 
           <div className="chart-placeholder">
             <div className="chart-line" />
