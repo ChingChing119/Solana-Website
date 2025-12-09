@@ -52,6 +52,7 @@ body {
   gap: 10px;
 }
 
+/* Old gradient dot (safe to keep) */
 .brand-dot {
   width: 12px;
   height: 12px;
@@ -60,6 +61,17 @@ body {
   box-shadow:
     0 0 10px rgba(153, 69, 255, 0.7),
     0 0 14px rgba(20, 241, 149, 0.6);
+}
+
+/* New logo image (if you switched to <img className="brand-logo" />) */
+.brand-logo {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px; /* change to 999px for circle */
+  object-fit: cover;
+  box-shadow:
+    0 0 10px rgba(153, 69, 255, 0.55),
+    0 0 12px rgba(20, 241, 149, 0.45);
 }
 
 .brand-text {
@@ -93,12 +105,23 @@ body {
   color: white;
   cursor: pointer;
   text-decoration: none;
-  transition: transform .15s ease, opacity .15s ease, border-color .15s ease;
+  transition: transform .15s ease, opacity .15s ease, border-color .15s ease, box-shadow .15s ease;
 }
 
 .topbar-btn:hover {
   transform: translateY(-1px);
   opacity: 0.95;
+}
+
+/* optional primary style (if you ever re-add it) */
+.topbar-btn-primary {
+  border: none;
+  color: #050013;
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--sol-purple), var(--sol-green));
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.06),
+    0 8px 24px rgba(0,0,0,0.35);
 }
 
 /* Phantom wallet button */
@@ -469,19 +492,23 @@ body {
 }
 
 /* =========================
-   TICKER: CROSS IN THE MIDDLE OF THE SCREEN
-   (Hero-only + always-visible text)
+   TICKER: BOTTOM OF FIRST PAGE (HERO)
+   + CROSSING LAYERS
+   + TEXT ALWAYS VISIBLE
 ========================= */
 .ticker-stack {
   position: absolute;
   left: 0;
   width: 100%;
 
-  /* center of the screen (within hero) */
-  top: 50%;
-  transform: translateY(-50%);
+  /* bottom of hero */
+  bottom: -12px;
 
-  height: 140px;
+  /* ensure no leftover center rules apply */
+  top: auto;
+  transform: none;
+
+  height: 130px; /* space for overlap/cross */
   z-index: 1;
   pointer-events: none;
 }
@@ -513,21 +540,21 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* both strips share the same center line -> clean X crossing */
+/* Cross inside the stack */
 .ticker-strip-a {
   transform: translateX(-50%) rotate(-2.6deg);
   z-index: 2;
 
-  top: 50%;
-  margin-top: -28px;
+  bottom: 50%;
+  margin-bottom: 12px;
 }
 
 .ticker-strip-b {
   transform: translateX(-50%) rotate(2.6deg);
   z-index: 1;
 
-  top: 50%;
-  margin-top: -28px;
+  bottom: 50%;
+  margin-bottom: -12px;
 }
 
 /* Track: text visible immediately */
@@ -539,11 +566,11 @@ body {
 
   padding-left: 24px;
 
-  animation: tickerMove 38s linear infinite;
+  animation: tickerMove 38s linear infinite; /* slow */
 }
 
 .ticker-track-slower {
-  animation-duration: 50s;
+  animation-duration: 50s; /* slower */
 }
 
 .ticker-track span {
@@ -602,14 +629,16 @@ body {
   }
 
   .ticker-stack {
-    height: 130px;
+    height: 120px;
   }
 
   .ticker-strip-a {
     transform: translateX(-50%) rotate(-2.2deg);
+    margin-bottom: 10px;
   }
 
   .ticker-strip-b {
     transform: translateX(-50%) rotate(2.2deg);
+    margin-bottom: -10px;
   }
 }
