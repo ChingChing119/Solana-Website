@@ -55,7 +55,7 @@ body {
 .brand-logo {
   width: 22px;
   height: 22px;
-  border-radius: 6px;
+  border-radius: 6px; /* change to 999px if you want circular */
   object-fit: cover;
   box-shadow:
     0 0 10px rgba(153, 69, 255, 0.55),
@@ -191,7 +191,7 @@ body {
   grid-template-columns: 1.2fr 0.8fr;
   gap: 32px;
   align-items: center;
-  z-index: 2; /* above ticker */
+  z-index: 2;
 }
 
 /* content card */
@@ -467,28 +467,26 @@ body {
 }
 
 /* =========================
-   SEAMLESS DOUBLE TICKER
-   BOTTOM OF HERO
+   ✅ ORIGINAL DOUBLE TICKER (FIRST MODEL)
+   LOCKED TO HERO BOTTOM
 ========================= */
 .ticker-stack {
   position: absolute;
   left: 0;
   width: 100%;
   bottom: -12px;
-  height: 130px;
   z-index: 1;
   pointer-events: none;
 }
 
-/* strips */
 .ticker-strip {
-  position: absolute;
-  left: 50%;
   height: 56px;
-  width: 120vw;
   overflow: hidden;
   display: flex;
   align-items: center;
+
+  width: 112%;
+  margin-left: -6%;
 
   background:
     linear-gradient(90deg,
@@ -505,63 +503,56 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* crossing layout */
 .ticker-strip-a {
-  transform: translateX(-50%) rotate(-2.6deg);
+  transform: rotate(-2.2deg);
+  position: relative;
   z-index: 2;
-  bottom: 50%;
-  margin-bottom: 12px;
 }
 
 .ticker-strip-b {
-  transform: translateX(-50%) rotate(2.6deg);
+  transform: rotate(2.2deg);
+  position: relative;
+  top: -32px;
   z-index: 1;
-  bottom: 50%;
-  margin-bottom: -12px;
 }
 
-/* marquee container */
 .ticker-track {
   display: flex;
   align-items: center;
-  width: max-content;
+  gap: 26px;
   white-space: nowrap;
-  animation: marquee 40s linear infinite;
+
+  padding-left: 100%;
+
+  animation: tickerMove 35s linear infinite;
 }
 
 .ticker-track-slower {
-  animation-duration: 55s;
+  animation-duration: 45s;
 }
 
-/* one full sequence */
-.ticker-run {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-  padding-right: 26px;
-}
-
-.ticker-run span {
+.ticker-track span {
   font-weight: 800;
   letter-spacing: 1px;
   font-size: 1.05rem;
+
   background: linear-gradient(90deg, var(--sol-purple), var(--sol-green));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+
   text-transform: uppercase;
   opacity: 0.95;
 }
 
-.ticker-run span:nth-child(2n) {
+.ticker-track span:nth-child(2n) {
   opacity: 0.55;
   font-weight: 600;
 }
 
-/* move exactly half width (because we duplicated runs) */
-@keyframes marquee {
+@keyframes tickerMove {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  100% { transform: translateX(-100%); }
 }
 
 /* =========================
@@ -595,17 +586,7 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .ticker-stack {
-    height: 120px;
-  }
-
-  .ticker-strip-a {
-    transform: translateX(-50%) rotate(-2.2deg);
-    margin-bottom: 10px;
-  }
-
   .ticker-strip-b {
-    transform: translateX(-50%) rotate(2.2deg);
-    margin-bottom: -10px;
+    top: -24px;
   }
 }
