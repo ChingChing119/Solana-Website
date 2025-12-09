@@ -24,15 +24,12 @@ export default function App() {
     const handleConnect = (publicKey) => {
       setWalletAddress(publicKey?.toString?.() ?? '');
     };
-
-    const handleDisconnect = () => {
-      setWalletAddress('');
-    };
+    const handleDisconnect = () => setWalletAddress('');
 
     provider.on?.('connect', handleConnect);
     provider.on?.('disconnect', handleDisconnect);
 
-    // If user already approved your site before:
+    // Silent auto-connect if already trusted
     provider.connect({ onlyIfTrusted: true }).catch(() => {});
 
     return () => {
@@ -56,7 +53,6 @@ export default function App() {
       setIsConnecting(true);
 
       if (walletAddress) {
-        // Disconnect if already connected
         await provider.disconnect();
         setWalletAddress('');
         return;
@@ -66,7 +62,6 @@ export default function App() {
       const addr = res?.publicKey?.toString?.() ?? '';
       setWalletAddress(addr);
     } catch (err) {
-      // silent fail for clean UX
       console.error('Phantom connect error:', err);
     } finally {
       setIsConnecting(false);
@@ -182,7 +177,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* CROSSING DOUBLE TICKER (LOCKED TO HERO) */}
+        {/* DOUBLE-LAYER ANGLED TICKER (LOCKED TO HERO) */}
         <div className="ticker-stack">
           <div className="ticker-strip ticker-strip-a">
             <div className="ticker-track">
@@ -195,6 +190,7 @@ export default function App() {
               <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
 
+              {/* duplicate for seamless loop */}
               <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
@@ -216,6 +212,7 @@ export default function App() {
               <span>AI</span><span>•</span>
               <span>Solana</span><span>•</span>
 
+              {/* duplicate for seamless loop */}
               <span>AISol</span><span>•</span>
               <span>AI</span><span>•</span>
               <span>Solana</span><span>•</span>
