@@ -477,26 +477,32 @@ body {
 }
 
 /* =========================
-   CROSSING DOUBLE TICKER
+   CENTER-CROSSING DOUBLE TICKER
    LOCKED TO HERO ONLY
+   + TEXT ALWAYS VISIBLE
 ========================= */
 .ticker-stack {
-  position: absolute;  /* locked to hero */
+  position: absolute;
   left: 0;
   width: 100%;
   bottom: -12px;
-  z-index: 1;          /* behind hero-inner cards */
+  height: 120px;
+  z-index: 1;
   pointer-events: none;
 }
 
+/* centered strips so the cross happens at screen center */
 .ticker-strip {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+
   height: 56px;
+  width: 120vw;
+
   overflow: hidden;
   display: flex;
   align-items: center;
-
-  width: 112%;
-  margin-left: -6%;
 
   background:
     linear-gradient(90deg,
@@ -513,31 +519,34 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
+/* top strip */
 .ticker-strip-a {
-  transform: rotate(-2.2deg);
-  position: relative;
+  transform: translateX(-50%) rotate(-2.2deg);
   z-index: 2;
+  bottom: 34px;
 }
 
+/* bottom strip */
 .ticker-strip-b {
-  transform: rotate(2.2deg);
-  position: relative;
-  top: -32px; /* overlap to cross */
+  transform: translateX(-50%) rotate(2.2deg);
   z-index: 1;
+  bottom: 12px;
 }
 
+/* Track: remove off-screen lead-in so text is visible immediately */
 .ticker-track {
   display: flex;
   align-items: center;
   gap: 26px;
   white-space: nowrap;
-  padding-left: 100%;
 
-  animation: tickerMove 35s linear infinite; /* slower */
+  padding-left: 24px;
+
+  animation: tickerMove 35s linear infinite;
 }
 
 .ticker-track-slower {
-  animation-duration: 45s; /* even slower */
+  animation-duration: 45s;
 }
 
 .ticker-track span {
@@ -554,6 +563,7 @@ body {
   opacity: 0.95;
 }
 
+/* bullets softer */
 .ticker-track span:nth-child(2n) {
   opacity: 0.55;
   font-weight: 600;
@@ -593,7 +603,15 @@ body {
     grid-template-columns: 1fr;
   }
 
+  .ticker-stack {
+    height: 110px;
+  }
+
+  .ticker-strip-a {
+    bottom: 30px;
+  }
+
   .ticker-strip-b {
-    top: -24px;
+    bottom: 10px;
   }
 }
