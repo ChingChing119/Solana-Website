@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import './index.css';
+import logo from './assets/AISOL.webp';
 
 export default function App() {
   const scrollTo = (id) => {
@@ -29,7 +30,6 @@ export default function App() {
     provider.on?.('connect', handleConnect);
     provider.on?.('disconnect', handleDisconnect);
 
-    // Silent auto-connect if already trusted
     provider.connect({ onlyIfTrusted: true }).catch(() => {});
 
     return () => {
@@ -74,7 +74,8 @@ export default function App() {
       <header className="topbar">
         <div className="topbar-inner">
           <div className="brand">
-            <span className="brand-dot" />
+            {/* NEW LOGO IMAGE REPLACING DOT */}
+            <img src={logo} alt="AISol logo" className="brand-logo" />
             <span className="brand-text">AISol</span>
           </div>
 
@@ -177,7 +178,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* DOUBLE-LAYER ANGLED TICKER (LOCKED TO HERO) */}
+        {/* DOUBLE-LAYER ANGLED TICKER (LOCKED TO HERO BOTTOM) */}
         <div className="ticker-stack">
           <div className="ticker-strip ticker-strip-a">
             <div className="ticker-track">
@@ -187,12 +188,7 @@ export default function App() {
               <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
 
-              {/* duplicate for seamless loop */}
-              <span>AISol</span><span>•</span>
-              <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
               <span>AISol</span><span>•</span>
@@ -209,17 +205,12 @@ export default function App() {
               <span>Solana</span><span>•</span>
               <span>Join the Revolution</span><span>•</span>
               <span>AISol</span><span>•</span>
-              <span>AI</span><span>•</span>
-              <span>Solana</span><span>•</span>
 
-              {/* duplicate for seamless loop */}
               <span>AISol</span><span>•</span>
               <span>AI</span><span>•</span>
               <span>Solana</span><span>•</span>
               <span>Join the Revolution</span><span>•</span>
               <span>AISol</span><span>•</span>
-              <span>AI</span><span>•</span>
-              <span>Solana</span><span>•</span>
             </div>
           </div>
         </div>
