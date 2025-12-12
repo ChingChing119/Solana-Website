@@ -10,7 +10,20 @@ export default function App() {
   const [connecting, setConnecting] = useState(false);
   const [solPrice, setSolPrice] = useState(null);
 
-  // ---------- Phantom connect ----------
+  // ---------- Fetch SOL balance ----------
+  const fetchBalance = async (address) => {
+    try {
+      const connection = new Connection(RPC_URL);
+      const pubkey = new PublicKey(address);
+      const lamports = await connection.getBalance(pubkey);
+      const sol = lamports / 1e9;
+      setSolBalance(sol);
+    } catch (err) {
+      console.error("Balance error:", err);
+    }
+  };
+
+  // ---------- Connect Phantom ----------
   const connectWallet = async () => {
     try {
       setConnecting(true);
@@ -26,7 +39,7 @@ export default function App() {
       const address = resp.publicKey.toString();
       setWalletAddress(address);
 
-      // fetch initial balance
+      // 👉 fetch SOL balance right after connecting
       await fetchBalance(address);
     } catch (err) {
       console.error("Connect error:", err);
@@ -35,19 +48,7 @@ export default function App() {
     }
   };
 
-  const fetchBalance = async (address) => {
-    try {
-      const connection = new Connection(RPC_URL);
-      const pubkey = new PublicKey(address);
-      const lamports = await connection.getBalance(pubkey);
-      const sol = lamports / 1e9;
-      setSolBalance(sol);
-    } catch (err) {
-      console.error("Balance error:", err);
-    }
-  };
-
-  // Re-attach Phantom on reload
+  // ---------- Re-attach Phantom on reload ----------
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!window.solana || !window.solana.isPhantom) return;
@@ -98,9 +99,9 @@ export default function App() {
     return () => clearInterval(id);
   }, []);
 
-  // ---------- Buttons ----------
+  // ---------- Other buttons ----------
   const handleViewChart = () => {
-    // swap this with your real AISol chart link when ready
+    // change this later to your real AISol chart link
     window.open("https://dexscreener.com/solana", "_blank", "noopener");
   };
 
@@ -146,6 +147,7 @@ export default function App() {
               X Page
             </a>
 
+            {/* 🔥 Wallet button shows SOL balance */}
             <button
               className={
                 "topbar-btn topbar-btn-wallet" +
@@ -157,7 +159,7 @@ export default function App() {
               {walletAddress
                 ? solBalance != null
                   ? `${solBalance.toFixed(3)} SOL`
-                  : "Wallet Connected"
+                  : "Loading SOL..."
                 : connecting
                 ? "Connecting..."
                 : "Connect Phantom"}
