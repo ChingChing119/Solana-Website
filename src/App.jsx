@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import "./index.css";
 
-const RPC_URL = "https://api.mainnet-beta.solana.com";
+// Use Solana mainnet RPC
+const RPC_URL = clusterApiUrl("mainnet-beta");
 
 export default function App() {
   const [walletAddress, setWalletAddress] = useState(null);
@@ -13,15 +14,24 @@ export default function App() {
   // ---------- Fetch SOL balance ----------
   const fetchBalance = async (address) => {
     try {
-      const connection = new Connection(RPC_URL);
+      const connection = new Connection(RPC_URL, "confirmed");
       const pubkey = new PublicKey(address);
       const lamports = await connection.getBalance(pubkey);
       const sol = lamports / 1e9;
       setSolBalance(sol);
     } catch (err) {
       console.error("Balance error:", err);
+      // fallback so you don't see "Loading SOL..." forever
+      setSolBalance(0);
     }
   };
+
+  // Whenever walletAddress changes, refetch balance
+  useEffect(() => {
+    if (walletAddress) {
+      fetchBalance(walletAddress);
+    }
+  }, [walletAddress]);
 
   // ---------- Connect Phantom ----------
   const connectWallet = async () => {
@@ -38,9 +48,7 @@ export default function App() {
       const resp = await provider.connect();
       const address = resp.publicKey.toString();
       setWalletAddress(address);
-
-      // 👉 fetch SOL balance right after connecting
-      await fetchBalance(address);
+      // balance will auto-load via useEffect above
     } catch (err) {
       console.error("Connect error:", err);
     } finally {
@@ -58,7 +66,6 @@ export default function App() {
     const handleConnect = (pubkey) => {
       const addr = pubkey.toString();
       setWalletAddress(addr);
-      fetchBalance(addr);
     };
 
     const handleDisconnect = () => {
@@ -147,7 +154,7 @@ export default function App() {
               X Page
             </a>
 
-            {/* 🔥 Wallet button shows SOL balance */}
+            {/* Wallet button – now always shows a value once connected */}
             <button
               className={
                 "topbar-btn topbar-btn-wallet" +
@@ -157,9 +164,9 @@ export default function App() {
               disabled={connecting}
             >
               {walletAddress
-                ? solBalance != null
-                  ? `${solBalance.toFixed(3)} SOL`
-                  : "Loading SOL..."
+                ? solBalance == null
+                  ? "Loading SOL..."
+                  : `${solBalance.toFixed(3)} SOL`
                 : connecting
                 ? "Connecting..."
                 : "Connect Phantom"}
