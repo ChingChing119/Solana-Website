@@ -1,39 +1,40 @@
 import { useEffect, useState } from "react";
-import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import "./index.css";
 
-// Use Solana mainnet RPC
-const RPC_URL = clusterApiUrl("mainnet-beta");
+// Mainnet RPC
+const RPC_URL = "https://api.mainnet-beta.solana.com";
 
 export default function App() {
   const [walletAddress, setWalletAddress] = useState(null);
   const [solBalance, setSolBalance] = useState(null);
   const [connecting, setConnecting] = useState(false);
-  const [solPrice, setSolPrice] = useState(null);
 
-  // ---------- Fetch SOL balance ----------
+  // ---- Fetch SOL balance from RPC ----
   const fetchBalance = async (address) => {
     try {
+      console.log("Fetching balance for:", address);
       const connection = new Connection(RPC_URL, "confirmed");
       const pubkey = new PublicKey(address);
       const lamports = await connection.getBalance(pubkey);
       const sol = lamports / 1e9;
+      console.log("SOL balance:", sol);
       setSolBalance(sol);
     } catch (err) {
       console.error("Balance error:", err);
-      // fallback so you don't see "Loading SOL..." forever
+      // so it doesn’t stay on “Loading SOL...”
       setSolBalance(0);
     }
   };
 
-  // Whenever walletAddress changes, refetch balance
+  // Re-fetch whenever walletAddress changes
   useEffect(() => {
     if (walletAddress) {
       fetchBalance(walletAddress);
     }
   }, [walletAddress]);
 
-  // ---------- Connect Phantom ----------
+  // ---- Connect Phantom ----
   const connectWallet = async () => {
     try {
       setConnecting(true);
@@ -47,8 +48,8 @@ export default function App() {
 
       const resp = await provider.connect();
       const address = resp.publicKey.toString();
-      setWalletAddress(address);
-      // balance will auto-load via useEffect above
+      console.log("Connected wallet:", address);
+      setWalletAddress(address); // balance will load in useEffect
     } catch (err) {
       console.error("Connect error:", err);
     } finally {
@@ -56,19 +57,20 @@ export default function App() {
     }
   };
 
-  // ---------- Re-attach Phantom on reload ----------
+  // ---- Auto-connect on reload if trusted ----
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!window.solana || !window.solana.isPhantom) return;
-
     const provider = window.solana;
+    if (!provider || !provider.isPhantom) return;
 
     const handleConnect = (pubkey) => {
       const addr = pubkey.toString();
+      console.log("Phantom event connect:", addr);
       setWalletAddress(addr);
     };
 
     const handleDisconnect = () => {
+      console.log("Phantom disconnected");
       setWalletAddress(null);
       setSolBalance(null);
     };
@@ -76,7 +78,6 @@ export default function App() {
     provider.on("connect", handleConnect);
     provider.on("disconnect", handleDisconnect);
 
-    // if already trusted, connect silently
     provider.connect({ onlyIfTrusted: true }).catch(() => {});
 
     return () => {
@@ -85,36 +86,25 @@ export default function App() {
     };
   }, []);
 
-  // ---------- SOL price (CoinGecko) ----------
-  useEffect(() => {
-    const fetchPrice = async () => {
-      try {
-        const res = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd"
-        );
-        const data = await res.json();
-        if (data?.solana?.usd) {
-          setSolPrice(data.solana.usd);
-        }
-      } catch (err) {
-        console.error("SOL price error:", err);
-      }
-    };
-
-    fetchPrice();
-    const id = setInterval(fetchPrice, 60_000);
-    return () => clearInterval(id);
-  }, []);
-
-  // ---------- Other buttons ----------
+  // ---- Buttons ----
   const handleViewChart = () => {
-    // change this later to your real AISol chart link
     window.open("https://dexscreener.com/solana", "_blank", "noopener");
   };
 
   const handleJoinScroll = () => {
     const el = document.getElementById("about");
     if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // ---- Wallet button text ----
+  const walletLabel = () => {
+    if (!walletAddress) {
+      return connecting ? "Connecting..." : "Connect Phantom";
+    }
+    if (solBalance == null) {
+      return "Loading SOL...";
+    }
+    return `${solBalance.toFixed(3)} SOL`;
   };
 
   return (
@@ -133,11 +123,6 @@ export default function App() {
 
           <div className="topbar-pill">
             <span>AI meets Solana speed ⚡</span>
-            {solPrice && (
-              <span className="topbar-solprice">
-                • SOL ${solPrice.toFixed(2)}
-              </span>
-            )}
           </div>
 
           <div className="topbar-actions">
@@ -154,7 +139,6 @@ export default function App() {
               X Page
             </a>
 
-            {/* Wallet button – now always shows a value once connected */}
             <button
               className={
                 "topbar-btn topbar-btn-wallet" +
@@ -163,13 +147,7 @@ export default function App() {
               onClick={connectWallet}
               disabled={connecting}
             >
-              {walletAddress
-                ? solBalance == null
-                  ? "Loading SOL..."
-                  : `${solBalance.toFixed(3)} SOL`
-                : connecting
-                ? "Connecting..."
-                : "Connect Phantom"}
+              {walletLabel()}
             </button>
           </div>
         </div>
@@ -253,8 +231,6 @@ export default function App() {
                   <span>AISol</span><span>•</span>
                   <span>Solana-grade speed</span><span>•</span>
                 </div>
-
-                {/* duplicate for seamless loop */}
                 <div className="ticker-content" aria-hidden="true">
                   <span>AISol</span><span>•</span>
                   <span>AI on Solana</span><span>•</span>
@@ -281,8 +257,6 @@ export default function App() {
                   <span>Community first</span><span>•</span>
                   <span>Fast. Clean. Fun.</span><span>•</span>
                 </div>
-
-                {/* duplicate for seamless loop */}
                 <div className="ticker-content" aria-hidden="true">
                   <span>AISol</span><span>•</span>
                   <span>Solana-grade speed</span><span>•</span>
