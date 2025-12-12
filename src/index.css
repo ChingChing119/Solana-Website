@@ -122,6 +122,13 @@ body {
   backdrop-filter: blur(8px);
 }
 
+/* SOL price text inside pill */
+.topbar-solprice {
+  margin-left: 6px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.96);
+}
+
 .topbar-actions {
   justify-self: end;
   display: flex;
@@ -160,7 +167,7 @@ body {
   transform: none;
 }
 
-/* Wallet button states */
+/* Wallet button state */
 .topbar-btn-wallet.connected {
   background:
     linear-gradient(90deg, rgba(153,69,255,0.35), rgba(20,241,149,0.35)),
@@ -168,7 +175,6 @@ body {
   border-color: rgba(255,255,255,0.20);
 }
 
-/* Responsive topbar */
 @media (max-width: 980px) {
   .topbar-inner {
     grid-template-columns: 1fr;
@@ -195,7 +201,7 @@ body {
   display: flex;
   align-items: center;
 
-  padding: 70px 18px 150px;
+  padding: 70px 18px 190px; /* extra room for tickers */
   overflow: hidden;
 
   background:
@@ -371,9 +377,6 @@ body {
 
 /* Glow animation for primary button */
 .glow-btn {
-  box-shadow:
-    0 0 0 rgba(153,69,255,0.0),
-    0 0 0 rgba(20,241,149,0.0);
   animation: btnPulse 2.6s ease-in-out infinite;
 }
 
@@ -438,7 +441,7 @@ body {
 /* Responsive hero */
 @media (max-width: 980px) {
   .hero {
-    padding-bottom: 170px;
+    padding-bottom: 200px;
   }
 
   .hero-inner {
@@ -519,7 +522,7 @@ body {
   }
 }
 
-/* Chart placeholder */
+/* Optional chart placeholder (if you add chart later) */
 .chart-placeholder {
   height: 220px;
   border-radius: var(--radius-lg);
@@ -551,8 +554,8 @@ body {
 .chart-line:nth-child(3) { top: 80%; }
 
 /* =========================
-   TICKER (CROSS + ALWAYS VISIBLE)
-   Requires duplicated JSX blocks
+   TICKER (GLOWING STRIPS + FULL FLOW)
+   Works with duplicated JSX blocks
 ========================= */
 
 .ticker-stack {
@@ -560,7 +563,7 @@ body {
   left: 0;
   width: 100%;
   bottom: 0;
-  height: 130px;
+  height: 140px;
   z-index: 1;
   pointer-events: none;
 }
@@ -569,8 +572,9 @@ body {
 .ticker-strip {
   position: absolute;
   left: 50%;
+  top: 50%;
   width: 120vw;
-  height: 56px;
+  height: 58px;
 
   overflow: hidden;
   display: flex;
@@ -578,32 +582,52 @@ body {
 
   background:
     linear-gradient(90deg,
-      rgba(153,69,255,0.20),
-      rgba(20,241,149,0.20)
+      rgba(153,69,255,0.22),
+      rgba(20,241,149,0.22)
     ),
-    rgba(0, 0, 0, 0.50);
+    rgba(0, 0, 0, 0.55);
 
   border-top: 1px solid rgba(255,255,255,0.08);
   border-bottom: 1px solid rgba(255,255,255,0.06);
   backdrop-filter: blur(10px);
 
   transform-origin: center center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+
+  box-shadow:
+    0 8px 28px rgba(0,0,0,0.40),
+    0 0 22px rgba(153,69,255,0.22),
+    0 0 22px rgba(20,241,149,0.18);
 }
 
-/* Cross in the middle */
+/* Glow aura overlay */
+.ticker-strip::before {
+  content: "";
+  position: absolute;
+  inset: -22px;
+  background: linear-gradient(90deg,
+    rgba(153,69,255,0.24),
+    rgba(20,241,149,0.24)
+  );
+  filter: blur(18px);
+  opacity: 0.35;
+  pointer-events: none;
+  animation: stripGlowPulse 3.2s ease-in-out infinite;
+}
+
+@keyframes stripGlowPulse {
+  0%, 100% { opacity: 0.28; }
+  50% { opacity: 0.50; }
+}
+
+/* Cross neatly within ticker area */
 .ticker-strip-a {
-  transform: translateX(-50%) rotate(-2.8deg);
+  transform: translate(-50%, -50%) rotate(-2.8deg);
   z-index: 2;
-  bottom: 50%;
-  margin-bottom: 12px;
 }
 
 .ticker-strip-b {
-  transform: translateX(-50%) rotate(2.8deg);
+  transform: translate(-50%, -50%) rotate(2.8deg);
   z-index: 1;
-  bottom: 50%;
-  margin-bottom: -12px;
 }
 
 /* Track that moves both duplicated blocks */
@@ -616,8 +640,8 @@ body {
 }
 
 /* Speed controls */
-.ticker-track.fast { animation-duration: 16s; }
-.ticker-track.slow { animation-duration: 22s; }
+.ticker-track.fast { animation-duration: 14s; }
+.ticker-track.slow { animation-duration: 20s; }
 
 /* Each content block is identical */
 .ticker-content {
@@ -629,7 +653,7 @@ body {
 
 /* Glowing gradient text */
 .ticker-content span {
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 1px;
   font-size: 1.05rem;
 
@@ -642,17 +666,18 @@ body {
   opacity: 0.98;
 
   text-shadow:
-    0 0 10px rgba(153,69,255,0.45),
-    0 0 14px rgba(20,241,149,0.40);
+    0 0 10px rgba(153,69,255,0.55),
+    0 0 14px rgba(20,241,149,0.50),
+    0 0 22px rgba(255,255,255,0.08);
 }
 
 .ticker-content span:nth-child(2n) {
   opacity: 0.55;
-  font-weight: 600;
+  font-weight: 700;
   text-shadow: none;
 }
 
-/* Key trick: move only half the width */
+/* Seamless loop: we move half, because we duplicated content */
 @keyframes tickerLoop {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -663,12 +688,10 @@ body {
   .ticker-stack { height: 120px; }
 
   .ticker-strip-a {
-    transform: translateX(-50%) rotate(-2.2deg);
-    margin-bottom: 10px;
+    transform: translate(-50%, -50%) rotate(-2.2deg);
   }
 
   .ticker-strip-b {
-    transform: translateX(-50%) rotate(2.2deg);
-    margin-bottom: -10px;
+    transform: translate(-50%, -50%) rotate(2.2deg);
   }
 }
