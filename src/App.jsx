@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import "./index.css";
 
-// Mainnet RPC
 const RPC_URL = "https://api.mainnet-beta.solana.com";
 
 export default function App() {
@@ -10,7 +9,7 @@ export default function App() {
   const [solBalance, setSolBalance] = useState(null);
   const [connecting, setConnecting] = useState(false);
 
-  // ---- Fetch SOL balance from RPC ----
+  // --- Fetch SOL balance from mainnet ---
   const fetchBalance = async (address) => {
     try {
       console.log("Fetching balance for:", address);
@@ -22,7 +21,7 @@ export default function App() {
       setSolBalance(sol);
     } catch (err) {
       console.error("Balance error:", err);
-      // so it doesn’t stay on “Loading SOL...”
+      // Fallback so we at least show 0.000 SOL
       setSolBalance(0);
     }
   };
@@ -34,7 +33,7 @@ export default function App() {
     }
   }, [walletAddress]);
 
-  // ---- Connect Phantom ----
+  // --- Connect Phantom ---
   const connectWallet = async () => {
     try {
       setConnecting(true);
@@ -49,7 +48,7 @@ export default function App() {
       const resp = await provider.connect();
       const address = resp.publicKey.toString();
       console.log("Connected wallet:", address);
-      setWalletAddress(address); // balance will load in useEffect
+      setWalletAddress(address); // this will trigger fetchBalance in useEffect
     } catch (err) {
       console.error("Connect error:", err);
     } finally {
@@ -57,7 +56,7 @@ export default function App() {
     }
   };
 
-  // ---- Auto-connect on reload if trusted ----
+  // --- Auto-connect on reload if trusted ---
   useEffect(() => {
     if (typeof window === "undefined") return;
     const provider = window.solana;
@@ -86,7 +85,7 @@ export default function App() {
     };
   }, []);
 
-  // ---- Buttons ----
+  // --- Other buttons ---
   const handleViewChart = () => {
     window.open("https://dexscreener.com/solana", "_blank", "noopener");
   };
@@ -96,15 +95,14 @@ export default function App() {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  // ---- Wallet button text ----
+  // --- Wallet button label (no "Loading SOL" anymore) ---
   const walletLabel = () => {
     if (!walletAddress) {
       return connecting ? "Connecting..." : "Connect Phantom";
     }
-    if (solBalance == null) {
-      return "Loading SOL...";
-    }
-    return `${solBalance.toFixed(3)} SOL`;
+    // If balance not fetched yet, treat it as 0 (still shows a number)
+    const value = solBalance ?? 0;
+    return `${value.toFixed(3)} SOL`;
   };
 
   return (
